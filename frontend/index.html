@@ -1,0 +1,12 @@
+<button onclick="fetchData()">Get Message</button>
+<p id="result"></p>
+
+<script>
+function fetchData() {
+  fetch('/api/message')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("result").innerText = data;
+    });
+}
+</script>

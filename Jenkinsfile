@@ -40,13 +40,19 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sshagent(['ec2-ssh']) {
-                    sh '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@54.224.204.17 "
-                    docker pull $DOCKERHUB/backend-app &&
-                    docker pull $DOCKERHUB/frontend-app &&
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@54.224.204.17 '
+                    if [ ! -d "cicd-java-app" ]; then
+                        git clone https://github.com/VasaviK23/cicd-java-app.git
+                    fi
+                    cd cicd-java-app
+                    git pull origin main
+                    docker pull admin2325/backend-app
+                    docker pull admin2325/frontend-app
+                    docker-compose down
                     docker-compose up -d
-                    "
-                    '''
+                    '
+                    """
                 }
             }
         }

@@ -8,12 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
-            steps {
-                git 'https://github.com/VasaviK23/cicd-java-app.git'
-            }
-        }
-
         stage('Build Docker Images') {
             steps {
                 sh 'docker build -t $DOCKERHUB/frontend-app ./frontend'

@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'docker' }
 
     environment {
         DOCKERHUB = "admin2325"
@@ -7,6 +7,13 @@ pipeline {
     }
 
     stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/VasaviK23/cicd-java-app.git',
+                    credentialsId: 'github-creds'
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
@@ -34,14 +41,14 @@ pipeline {
             steps {
                 sshagent(['ec2-ssh']) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@54.224.204.17"
+                    ssh -o StrictHostKeyChecking=no ec2-user@54.224.204.17 "
                     docker pull $DOCKERHUB/backend-app &&
                     docker pull $DOCKERHUB/frontend-app &&
                     docker-compose up -d
                     "
                     '''
                 }
-             }
+            }
         }
     }
 }
